@@ -1,6 +1,19 @@
-export function renderSingleCountryInfo({ webformatURL, tags, likes, views, comments, downloads }) {
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
+export function renderSingleCountryInfo({
+  webformatURL,
+  largeImageURL,
+  tags,
+  likes,
+  views,
+  comments,
+  downloads,
+}) {
   return ` <div class="photo-card">
+  <a class="gallery__item" href="${largeImageURL}"> 
   <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+    </a>
   <div class="info">
     <p class="info-item">
       <b>Likes</b>
@@ -19,14 +32,22 @@ export function renderSingleCountryInfo({ webformatURL, tags, likes, views, comm
       ${downloads}
     </p>
   </div>
+
 </div>
 `;
 }
 
-// webformatURL - ссылка на маленькое изображение для списка карточек.
-// largeImageURL - ссылка на большое изображение.
-// tags - строка с описанием изображения. Подойдет для атрибута alt.
-// likes - количество лайков.
-// views - количество просмотров.
-// comments - количество комментариев.
-// downloads - количество загрузок.
+// new SimpleLightbox('.gallery a', {
+//   // captionsData: 'alt',
+//   animationSpeed: 250,
+// });
+// // refresh();
+
+let gallery = new SimpleLightbox('.gallery a');
+gallery.on('show.simplelightbox', function () {
+  // do something…
+});
+
+gallery.on('error.simplelightbox', function (e) {
+  console.log(e); // some usefull information
+});

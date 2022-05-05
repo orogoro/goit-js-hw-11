@@ -59,7 +59,7 @@ b{
 img{
     display: block;
     // width: 100%;
-    overflow: hidden;
+    object-fit: cover;
     width: 328px;
     height: 200px;
 }

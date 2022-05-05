@@ -1,7 +1,11 @@
 import Notiflix from 'notiflix';
+
 import NewsApiService from '../js/helpers/axiosGetGallery';
 import { renderSingleCountryInfo } from '../js/gallery/galleryUI';
 import LoadMoreBtn from '../js/components/load-more-btn';
+
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 import '../sass/main.scss';
 
@@ -26,32 +30,21 @@ async function onSearchValue(e) {
   newsApiService.query = refs.searchFormInput.value;
 
   if (newsApiService.query === '') {
-    Notiflix.Notify.failure(
+    return Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.',
     );
-    return infoNotify();
   }
 
-  newsApiService.resetPage();
-  clearGalleryContainer();
-  onSearchMore();
-  loadMoreBtn.hide();
-}
-
-async function onSearchMore() {
   try {
+    newsApiService.resetPage();
     const items = await newsApiService.getPicture();
 
-    const limitPage = items.data.totalHits / newsApiService.limit;
-
-    if (newsApiService.page > limitPage && limitPage >= 1) {
-      return infoNotify();
-    } else if (newsApiService.page === 2 && newsApiService.page > limitPage) {
-      return infoNotify();
+    if (items.data.totalHits >= 1) {
+      Notiflix.Notify.success(`Hooray! We found ${items.data.totalHits} images.`);
     }
-
+    loadMoreBtn.hide();
+    clearGalleryContainer();
     showGalletyItems(items.data.hits);
-    newsApiService.incrementPage();
 
     if (items.data.hits.length === 0) {
       Notiflix.Notify.failure(
@@ -63,14 +56,31 @@ async function onSearchMore() {
   } catch (error) {
     console.log('Error');
   }
-
   loadMoreBtn.show();
+}
+
+async function onSearchMore() {
+  newsApiService.incrementPage();
+  const items = await newsApiService.getPicture();
+  const limitPage = items.data.totalHits / newsApiService.limit;
+
+  if (newsApiService.page > limitPage && limitPage >= 1) {
+    return infoNotify();
+  } else if (newsApiService.page === 2 && newsApiService.page > limitPage) {
+    return infoNotify();
+  }
+  showGalletyItems(items.data.hits);
 }
 
 function showGalletyItems(items) {
   const cards = items.map(item => renderSingleCountryInfo(item)).join('');
   refs.gallery.insertAdjacentHTML('beforeend', cards);
 }
+
+new SimpleLightbox('.gallery a', {
+  // captionsData: 'alt',
+  animationSpeed: 250,
+});
 
 function clearGalleryContainer() {
   refs.gallery.innerHTML = '';

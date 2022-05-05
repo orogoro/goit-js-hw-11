@@ -5,6 +5,9 @@
     flex-wrap: wrap;
     padding: 20px 10px;
 }
+.gallery__item{
+    text-decoration: none;
+}
 
 .photo-card{
     width: 330px;
@@ -17,6 +20,12 @@
         margin-left: auto;
         margin-right: auto;
         margin-bottom: 15px;
+
+        transition: transform cubic-bezier(0.4, 0, 0.2, 1) 250ms;
+
+        &:hover{
+                transform: scale(1.03);
+        }
    
 }
 
@@ -26,6 +35,7 @@
     text-align: center;
     margin-top: 5px;
     padding: 10px 10px;
+    color: #757575;
 
     &-item{
         line-height:1.3;
