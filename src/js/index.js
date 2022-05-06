@@ -1,12 +1,11 @@
 import Notiflix from 'notiflix';
+import SimpleLightbox from 'simplelightbox';
 
 import NewsApiService from '../js/helpers/axiosGetGallery';
 import { renderSingleCountryInfo } from '../js/gallery/galleryUI';
 import LoadMoreBtn from '../js/components/load-more-btn';
 
-import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-
 import '../sass/main.scss';
 
 const refs = {
@@ -20,6 +19,10 @@ const loadMoreBtn = new LoadMoreBtn({
   selector: '.load-more',
   hidden: true,
 });
+function onSimpleLightbox() {
+  let galery = new SimpleLightbox('.gallery a');
+  return galery;
+}
 
 refs.searchForm.addEventListener('submit', onSearchValue);
 loadMoreBtn.refs.button.addEventListener('click', onSearchMore);
@@ -69,18 +72,16 @@ async function onSearchMore() {
   } else if (newsApiService.page === 2 && newsApiService.page > limitPage) {
     return infoNotify();
   }
+  onSimpleLightbox().refresh();
   showGalletyItems(items.data.hits);
 }
 
 function showGalletyItems(items) {
   const cards = items.map(item => renderSingleCountryInfo(item)).join('');
   refs.gallery.insertAdjacentHTML('beforeend', cards);
-}
 
-new SimpleLightbox('.gallery a', {
-  // captionsData: 'alt',
-  animationSpeed: 250,
-});
+  onSimpleLightbox();
+}
 
 function clearGalleryContainer() {
   refs.gallery.innerHTML = '';
